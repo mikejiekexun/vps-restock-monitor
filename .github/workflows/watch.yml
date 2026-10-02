@@ -33,4 +33,4 @@ jobs:
           ALLOW_STATE_COMMIT: "1"
           MAX_MINUTES: "244"
           CHECK_INTERVAL: "40"
-          HEARTBEAT_HOURS: "6"
+          HEARTBEAT_HOURS: "2"

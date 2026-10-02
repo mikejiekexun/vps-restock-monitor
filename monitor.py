@@ -325,7 +325,7 @@ def main():
     prev = {t["name"]: load_state().get(t["name"]) for t in targets}
     if not once:
         notify("🟢 补货监控已启动", "盯住:\n" + "\n".join(
-            f"· {t['name']}" for t in targets))
+            f"· {t['name']}" for t in targets), weixin=False)
     start = time.time()
     last_beat = start
     while True:
