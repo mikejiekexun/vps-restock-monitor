@@ -14,7 +14,16 @@
 
 - **count 模式**（如 Lamhost）：页面始终显示「N 可用」，正则第一个捕获组 = 数量，库存 > `notify_above` 判定有货。
 - **badge 模式**（如 VMISS）：页面只在**缺货**时显示「0 Available / 缺货」徽标，有货时什么都不显示。正则 = 套餐名 + 窗口 + 缺货徽标，匹配到 = 0，匹配不到 = 1。
-- **json 模式**（如 Panstar）：直接读站点的公开 JSON 接口里的库存字段，最精准。支持响应解密（panstar 用 AES-GCM，密钥取自其前端 JS）。`json_pick` 三种取法：`plan_id`（盯指定套餐，配 `plan_id`）、`cheapest`（盯最低价套餐）、`count_in_stock`（任意套餐有货就报）。
+- **json 模式**（如 Panstar / Akile）：直接读站点的公开 JSON 接口里的库存字段，最精准。支持响应解密（panstar 用 AES-GCM，密钥取自其前端 JS）。`json_pick` 三种取法：`plan_id`（盯指定套餐，配 `plan_id`）、`cheapest`（盯最低价套餐）、`count_in_stock`（任意套餐有货就报，警报自动附上哪些套餐、几台）。
+  - 接口返回嵌套结构时用 `json_find_plans` 分步定位，每步 `{"path": "字段名", "filter": {"字段": "值"}}`，如 Akile 日本 JPPro：
+    ```json
+    "json_find_plans": {"steps": [
+      {"path": "data.areas", "filter": {"area_name": "日本"}},
+      {"path": "nodes", "filter": {"group_name": "JPPro"}},
+      {"path": "plans"}
+    ]}
+    ```
+  - 库存字段名默认 `stockAvailable`（布尔），Akile 这类数量字段用 `"json_stock_field": "stock"`。
 
 ## 部署步骤（GitHub 网页即可完成）
 

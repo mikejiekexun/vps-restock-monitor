@@ -154,9 +154,40 @@ def _sellable(plans):
     return [p for p in plans if not p.get("archived") and p.get("status", 0) == 0]
 
 
+def _json_find(data, spec):
+    """分步取套餐：steps 每步 {path, filter}——先按 path 取子级（dict 直取，
+    list 逐项展开拍平），再用 filter 对本层条目做等值过滤。"""
+    cur = data
+    for step in spec["steps"]:
+        seg = step.get("path", "")
+        keys = [k.strip() for k in seg.split(".") if k.strip()]
+        if isinstance(cur, list):
+            flat = []
+            for item in cur:
+                obj = item
+                for key in keys:
+                    obj = obj[key]
+                flat.extend(obj if isinstance(obj, list) else [obj])
+            cur = flat
+        else:
+            for key in keys:
+                cur = cur[key]
+        f = step.get("filter")
+        if f:
+            cur = [x for x in cur if all(x.get(k) == v for k, v in f.items())]
+    return cur
+
+
 def compute_stock_json(target):
-    plans = _sellable(_plans_list(fetch_json(target)))
+    data = fetch_json(target)
+    spec = target.get("json_find_plans")
+    plans = _json_find(data, spec) if spec else _plans_list(data)
+    plans = _sellable(plans)
+    stock_field = target.get("json_stock_field", "stockAvailable")
     pick = target.get("json_pick", "cheapest")
+
+    def plan_label(p):
+        return p.get("name") or p.get("plan_name") or str(p.get("id"))
 
     def fmt(p):
         return (f'{p.get("name")}: ${p.get("price") / 100:g}/月, '
@@ -167,13 +198,17 @@ def compute_stock_json(target):
         if plan is None:
             raise RuntimeError(f'plan {target.get("plan_id")} 不存在或已下架')
         target["_detail"] = fmt(plan)
-        return 1 if plan.get("stockAvailable") else 0
+        return 1 if plan.get(stock_field) else 0
     if pick == "cheapest":
         best = min(plans, key=lambda p: p["price"] if isinstance(p.get("price"), (int, float)) else 1e18)
         target["_detail"] = fmt(best)
-        return 1 if best.get("stockAvailable") else 0
+        return 1 if best.get(stock_field) else 0
     if pick == "count_in_stock":
-        return sum(1 for p in plans if p.get("stockAvailable"))
+        in_stock = [p for p in plans if p.get(stock_field)]
+        if in_stock:
+            target["_detail"] = "\n".join(
+                f"· {plan_label(p)}: {p.get(stock_field)} 台有货" for p in in_stock)
+        return len(in_stock)
     raise RuntimeError(f"未知 json_pick: {pick}")
 
 

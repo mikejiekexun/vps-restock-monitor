@@ -104,5 +104,33 @@
     "buy_url": "https://app.vmiss.com/store/us-los-angeles-cn2/ultra",
     "notify_above": 0,
     "fetch": "flare"
+  },
+  {
+    "name": "Akile 日本 JPPro（大陆三网优化）有货监控",
+    "stock": "json",
+    "json_url": "https://api.akile.ai/api/v1/store/GetVpsStoreV3",
+    "json_stock_field": "stock",
+    "json_pick": "count_in_stock",
+    "json_find_plans": {
+      "steps": [
+        {
+          "path": "data.areas",
+          "filter": {
+            "area_name": "日本"
+          }
+        },
+        {
+          "path": "nodes",
+          "filter": {
+            "group_name": "JPPro"
+          }
+        },
+        {
+          "path": "plans"
+        }
+      ]
+    },
+    "buy_url": "https://akile.ai/shop/server?areaId=5",
+    "notify_above": 0
   }
 ]
