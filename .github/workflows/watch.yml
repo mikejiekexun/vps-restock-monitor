@@ -27,6 +27,8 @@ jobs:
         env:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_CHAT: ${{ secrets.TG_CHAT }}
+          SERVERCHAN_KEY: ${{ secrets.SERVERCHAN_KEY }}
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
           FLARESOLVERR_URL: http://localhost:8191
           ALLOW_STATE_COMMIT: "1"
           MAX_MINUTES: "244"

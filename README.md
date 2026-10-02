@@ -25,6 +25,15 @@
    - `TG_CHAT`：你自己的数字 chat id
 4. Actions 页面 → watch → Run workflow 手动跑一次验证：收到「🟢 补货监控已启动」即成功。
 
+## 微信推送（可选备用渠道）
+
+补货警报会同时推 Telegram 和微信，防止漏看：
+
+- **Server酱**：https://sct.ftqq.com 微信扫码登录 → 复制 SendKey → 存为 Secret `SERVERCHAN_KEY`（免费 5 条/天，只发警报够用）
+- **PushPlus**：https://www.pushplus.plus 微信扫码登录 → 首页复制 token → 存为 Secret `PUSHPLUS_TOKEN`（免费额度较宽松）
+
+两个都配就都发。心跳消息默认只走 Telegram（省微信额度），设环境变量 `WEIXIN_HEARTBEAT=1` 可让心跳也推微信。
+
 ## 修改监控目标
 
 编辑 `monitors.json`，每个条目：

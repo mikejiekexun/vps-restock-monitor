@@ -30,6 +30,9 @@ MAX_MINUTES = float(os.environ.get("MAX_MINUTES", "349"))         # 本进程最
 HEARTBEAT_HOURS = float(os.environ.get("HEARTBEAT_HOURS", "6"))   # 心跳消息间隔（小时）
 TG_TOKEN = os.environ.get("TG_TOKEN", "")
 TG_CHAT = os.environ.get("TG_CHAT", "")
+SERVERCHAN_KEY = os.environ.get("SERVERCHAN_KEY", "")   # Server酱 SendKey（微信推送，备用渠道）
+PUSHPLUS_TOKEN = os.environ.get("PUSHPLUS_TOKEN", "")   # PushPlus token（微信推送，备用渠道）
+WEIXIN_HEARTBEAT = os.environ.get("WEIXIN_HEARTBEAT") == "1"  # 微信渠道是否也发心跳（默认只发补货警报）
 FLARESOLVERR_URL = os.environ.get("FLARESOLVERR_URL", "")
 ALLOW_STATE_COMMIT = os.environ.get("ALLOW_STATE_COMMIT") == "1"
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -197,6 +200,52 @@ def tg_send(text):
         log("[tg] 发送失败:", repr(e))
 
 
+def weixin_send(title, body):
+    """通过 Server酱 / PushPlus 推微信，两个都配置就都发。返回是否至少成功一个。"""
+    sent = False
+    if SERVERCHAN_KEY:
+        try:
+            data = urllib.parse.urlencode({"title": title[:32], "desp": body}).encode()
+            req = urllib.request.Request(
+                f"https://sctapi.ftqq.com/{SERVERCHAN_KEY}.send", data=data)
+            with urllib.request.urlopen(req, timeout=20) as r:
+                res = json.load(r)
+            if res.get("code") == 0:
+                sent = True
+                log("[wechat/Server酱] 已发送")
+            else:
+                log("[wechat/Server酱] 失败:", str(res)[:150])
+        except Exception as e:
+            log("[wechat/Server酱] 发送失败:", repr(e))
+    if PUSHPLUS_TOKEN:
+        try:
+            payload = json.dumps({"token": PUSHPLUS_TOKEN, "title": title,
+                                  "content": body, "template": "txt"}).encode()
+            req = urllib.request.Request("https://www.pushplus.plus/send",
+                                         data=payload,
+                                         headers={"Content-Type": "application/json"})
+            with urllib.request.urlopen(req, timeout=20) as r:
+                res = json.load(r)
+            if res.get("code") == 200:
+                sent = True
+                log("[wechat/PushPlus] 已发送")
+            else:
+                log("[wechat/PushPlus] 失败:", str(res)[:150])
+        except Exception as e:
+            log("[wechat/PushPlus] 发送失败:", repr(e))
+    if not (SERVERCHAN_KEY or PUSHPLUS_TOKEN):
+        log("[wechat] 未配置微信推送渠道")
+        return None
+    return sent
+
+
+def notify(title, body, weixin=True):
+    """多渠道通知：Telegram + 微信（Server酱/PushPlus）。心跳类消息可指定 weixin=False 省额度。"""
+    tg_send(f"{title}\n{body}" if body else title)
+    if weixin:
+        weixin_send(title, body)
+
+
 def load_targets():
     with open(os.path.join(BASE_DIR, "monitors.json"), encoding="utf-8") as f:
         return json.load(f)
@@ -240,7 +289,7 @@ def main():
     targets = load_targets()
     prev = {t["name"]: load_state().get(t["name"]) for t in targets}
     if not once:
-        tg_send("🟢 补货监控已启动，盯住:\n" + "\n".join(
+        notify("🟢 补货监控已启动", "盯住:\n" + "\n".join(
             f"· {t['name']}" for t in targets))
     start = time.time()
     last_beat = start
@@ -269,8 +318,8 @@ def main():
             elif n > threshold >= old:
                 detail = t.pop("_detail", "")
                 extra = f"\n{detail}" if detail else ""
-                tg_send(f"🚨 {t['name']} 补货啦: {stock_text(t, n)}！{extra}\n"
-                        f"{t.get('buy_url', t.get('url', ''))}")
+                notify(f"🚨 {t['name']} 补货啦: {stock_text(t, n)}！",
+                       f"{extra}\n{t.get('buy_url', t.get('url', ''))}".strip())
             if old is None or n != old:
                 prev[t["name"]] = n
                 dirty = True
@@ -281,9 +330,9 @@ def main():
             break
         if time.time() - last_beat >= HEARTBEAT_HOURS * 3600:
             last_beat = time.time()
-            tg_send("💓 心跳：监控运行中\n" + "\n".join(
+            notify("💓 心跳：监控运行中", "\n".join(
                 f"· {t['name']}: {stock_text(t, prev[t['name']]) if prev[t['name']] is not None else '未知'}"
-                for t in targets))
+                for t in targets), weixin=WEIXIN_HEARTBEAT)
         if time.time() - start >= MAX_MINUTES * 60:
             log("时间预算用完，干净退出，等下一次调度接力")
             break
