@@ -1,0 +1,31 @@
+name: quickcheck (兜底快查)
+on:
+  schedule:
+    # 每 30 分钟单点检查一次，防止值守窗口因 GitHub 排队延迟出现空隙
+    - cron: "9,39 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      flaresolverr:
+        image: ghcr.io/flaresolverr/flaresolverr:latest
+        ports:
+          - 8191:8191
+        env:
+          LOG_LEVEL: info
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q cryptography
+      - run: python monitor.py --once
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+          FLARESOLVERR_URL: http://localhost:8191
+          ALLOW_STATE_COMMIT: "1"

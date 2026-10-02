@@ -1,0 +1,34 @@
+name: watch (长驻值守)
+on:
+  schedule:
+    # UTC 每 4 小时一个值守窗口（1:11 / 5:11 / 9:11 ...），每窗口跑 4h05m，前后重叠几分钟实现无缝接力
+    - cron: "11 */4 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 255
+    services:
+      flaresolverr:
+        image: ghcr.io/flaresolverr/flaresolverr:latest
+        ports:
+          - 8191:8191
+        env:
+          LOG_LEVEL: info
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q cryptography
+      - run: python monitor.py
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT: ${{ secrets.TG_CHAT }}
+          FLARESOLVERR_URL: http://localhost:8191
+          ALLOW_STATE_COMMIT: "1"
+          MAX_MINUTES: "244"
+          CHECK_INTERVAL: "40"
+          HEARTBEAT_HOURS: "6"
