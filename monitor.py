@@ -345,8 +345,41 @@ def dispatch_next_watch():
         log("[chain] 自触发失败，由定时排班兜底:", repr(e))
 
 
+def peer_on_duty():
+    """排班班次开工查岗：若已有值守窗口在跑，本班自动下岗（防止多班重叠）。
+    自触发接力的班次（workflow_dispatch）是被点名的接班人，不参与查岗。"""
+    if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch":
+        return False
+    repo = os.environ.get("GITHUB_REPOSITORY", "")
+    token = os.environ.get("CHAIN_PAT", "") or os.environ.get("GITHUB_TOKEN", "")
+    if not (repo and token):
+        return False
+    req = urllib.request.Request(
+        f"https://api.github.com/repos/{repo}/actions/runs?status=in_progress&per_page=30",
+        headers={"Authorization": f"Bearer {token}",
+                 "Accept": "application/vnd.github+json",
+                 "User-Agent": "restock-chain"})
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            runs = json.load(r).get("workflow_runs", [])
+    except Exception as e:
+        log("[peer] 查岗失败，按无同伴继续:", repr(e))
+        return False
+    me = os.environ.get("GITHUB_RUN_ID", "")
+    for run in runs:
+        if str(run["id"]) == me or not run["name"].startswith("watch"):
+            continue
+        if run["status"] == "in_progress":
+            log(f"[peer] 发现已同伴在岗: run {run['id']}（{run['created_at'][11:16]} UTC 起）")
+            return True
+    return False
+
+
 def main():
     once = "--once" in sys.argv
+    if peer_on_duty():
+        log("[peer] 已有同伴窗口在岗，本班自动下岗（排班冗余）")
+        return
     targets = load_targets()
     prev = {t["name"]: load_state().get(t["name"]) for t in targets}
     if not once:
