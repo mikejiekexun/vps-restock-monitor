@@ -320,13 +320,13 @@ def save_and_commit_state(state):
 
 
 def dispatch_next_watch():
-    """自触发接力：下班前把下一班值守拉起来，不再依赖 GitHub 排班。
-    （GitHub 对 workflow_dispatch + GITHUB_TOKEN 有豁免，可以自触发；
-     若某次失败，watch.yml 里的定时排班仍会兜底。）"""
+    """自触发接力：下班前把下一班值守拉起来。
+    优先用 CHAIN_PAT（个人令牌，确定可行）；实测 GITHUB_TOKEN 的
+    workflow_dispatch 不会真正触发新运行，故只作最后兜底。"""
     repo = os.environ.get("GITHUB_REPOSITORY", "")
-    token = os.environ.get("GITHUB_TOKEN", "")
+    token = os.environ.get("CHAIN_PAT", "") or os.environ.get("GITHUB_TOKEN", "")
     if not (repo and token):
-        log("[chain] 非 Actions 环境，跳过自触发")
+        log("[chain] 缺少 GITHUB_REPOSITORY/令牌，跳过自触发")
         return
     body = json.dumps({"ref": os.environ.get("GITHUB_REF_NAME", "main")}).encode()
     req = urllib.request.Request(
