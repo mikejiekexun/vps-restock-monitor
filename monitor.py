@@ -319,6 +319,30 @@ def save_and_commit_state(state):
         log("[state] 提交失败(不影响监控):", repr(e))
 
 
+def dispatch_next_watch():
+    """自触发接力：下班前把下一班值守拉起来，不再依赖 GitHub 排班。
+    （GitHub 对 workflow_dispatch + GITHUB_TOKEN 有豁免，可以自触发；
+     若某次失败，watch.yml 里的定时排班仍会兜底。）"""
+    repo = os.environ.get("GITHUB_REPOSITORY", "")
+    token = os.environ.get("GITHUB_TOKEN", "")
+    if not (repo and token):
+        log("[chain] 非 Actions 环境，跳过自触发")
+        return
+    body = json.dumps({"ref": os.environ.get("GITHUB_REF_NAME", "main")}).encode()
+    req = urllib.request.Request(
+        f"https://api.github.com/repos/{repo}/actions/workflows/watch.yml/dispatches",
+        data=body, method="POST",
+        headers={"Authorization": f"Bearer {token}",
+                 "Accept": "application/vnd.github+json",
+                 "User-Agent": "restock-chain"})
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            r.read()
+        log("[chain] 已呼叫下一班上岗，接力完成")
+    except Exception as e:
+        log("[chain] 自触发失败，由定时排班兜底:", repr(e))
+
+
 def main():
     once = "--once" in sys.argv
     targets = load_targets()
@@ -369,7 +393,8 @@ def main():
                 f"· {t['name']}: {stock_text(t, prev[t['name']]) if prev[t['name']] is not None else '未知'}"
                 for t in targets), weixin=WEIXIN_HEARTBEAT)
         if time.time() - start >= MAX_MINUTES * 60:
-            log("时间预算用完，干净退出，等下一次调度接力")
+            log("时间预算用完，交接下一班")
+            dispatch_next_watch()
             break
         time.sleep(CHECK_INTERVAL)
 
