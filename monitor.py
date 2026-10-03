@@ -213,7 +213,9 @@ def compute_stock_json(target):
 
 
 def stock_text(target, n):
-    return "有货（数量未知）" if target.get("stock", "count") == "badge" else f"{n} 可用"
+    if target.get("stock", "count") == "badge":
+        return "有货" if n else "缺货（0 Available）"
+    return f"{n} 可用"
 
 
 def tg_send(text):
