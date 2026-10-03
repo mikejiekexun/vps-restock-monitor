@@ -7,51 +7,6 @@
     "notify_above": 0
   },
   {
-    "name": "VMISS 洛杉矶 CMIN2 Basic（$5 CAD/月）",
-    "url": "https://app.vmiss.com/store/us-los-angeles-cmin2",
-    "stock": "badge",
-    "oos_pattern": "US\\.LA\\.CMIN2\\.Basic[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
-    "buy_url": "https://app.vmiss.com/store/us-los-angeles-cmin2/basic",
-    "notify_above": 0,
-    "fetch": "flare"
-  },
-  {
-    "name": "VMISS 洛杉矶 CMIN2 Core（$10 CAD/月）",
-    "url": "https://app.vmiss.com/store/us-los-angeles-cmin2",
-    "stock": "badge",
-    "oos_pattern": "US\\.LA\\.CMIN2\\.Core[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
-    "buy_url": "https://app.vmiss.com/store/us-los-angeles-cmin2/core",
-    "notify_above": 0,
-    "fetch": "flare"
-  },
-  {
-    "name": "VMISS 洛杉矶 CMIN2 Pro（$16 CAD/月）",
-    "url": "https://app.vmiss.com/store/us-los-angeles-cmin2",
-    "stock": "badge",
-    "oos_pattern": "US\\.LA\\.CMIN2\\.Pro[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
-    "buy_url": "https://app.vmiss.com/store/us-los-angeles-cmin2/pro",
-    "notify_above": 0,
-    "fetch": "flare"
-  },
-  {
-    "name": "VMISS 洛杉矶 CMIN2 Elite（$30 CAD/月）",
-    "url": "https://app.vmiss.com/store/us-los-angeles-cmin2",
-    "stock": "badge",
-    "oos_pattern": "US\\.LA\\.CMIN2\\.Elite[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
-    "buy_url": "https://app.vmiss.com/store/us-los-angeles-cmin2/elite",
-    "notify_above": 0,
-    "fetch": "flare"
-  },
-  {
-    "name": "VMISS 洛杉矶 CMIN2 Ultra（$60 CAD/月）",
-    "url": "https://app.vmiss.com/store/us-los-angeles-cmin2",
-    "stock": "badge",
-    "oos_pattern": "US\\.LA\\.CMIN2\\.Ultra[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
-    "buy_url": "https://app.vmiss.com/store/us-los-angeles-cmin2/ultra",
-    "notify_above": 0,
-    "fetch": "flare"
-  },
-  {
     "name": "Panstar 台北 TW Lite 最便宜套餐",
     "stock": "json",
     "json_url": "https://panstar.ai/api/ecs/catalog/plans?productId=25",
@@ -75,33 +30,6 @@
     "stock": "badge",
     "oos_pattern": "US\\.LA\\.CN2\\.Core[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
     "buy_url": "https://app.vmiss.com/store/us-los-angeles-cn2/core",
-    "notify_above": 0,
-    "fetch": "flare"
-  },
-  {
-    "name": "VMISS 洛杉矶 CN2 GIA Pro（$20 CAD/月）",
-    "url": "https://app.vmiss.com/store/us-los-angeles-cn2",
-    "stock": "badge",
-    "oos_pattern": "US\\.LA\\.CN2\\.Pro[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
-    "buy_url": "https://app.vmiss.com/store/us-los-angeles-cn2/pro",
-    "notify_above": 0,
-    "fetch": "flare"
-  },
-  {
-    "name": "VMISS 洛杉矶 CN2 GIA Elite（$38 CAD/月）",
-    "url": "https://app.vmiss.com/store/us-los-angeles-cn2",
-    "stock": "badge",
-    "oos_pattern": "US\\.LA\\.CN2\\.Elite[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
-    "buy_url": "https://app.vmiss.com/store/us-los-angeles-cn2/elite",
-    "notify_above": 0,
-    "fetch": "flare"
-  },
-  {
-    "name": "VMISS 洛杉矶 CN2 GIA Ultra（$75 CAD/月）",
-    "url": "https://app.vmiss.com/store/us-los-angeles-cn2",
-    "stock": "badge",
-    "oos_pattern": "US\\.LA\\.CN2\\.Ultra[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
-    "buy_url": "https://app.vmiss.com/store/us-los-angeles-cn2/ultra",
     "notify_above": 0,
     "fetch": "flare"
   },
@@ -132,5 +60,59 @@
     },
     "buy_url": "https://akile.ai/shop/server?areaId=5",
     "notify_above": 0
+  },
+  {
+    "name": "VMISS 洛杉矶 TRI Basic（$5 CAD/月）",
+    "url": "https://app.vmiss.com/store/us-los-angeles-tri",
+    "stock": "badge",
+    "oos_pattern": "US\\.LA\\.TRI\\.Basic[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
+    "buy_url": "https://app.vmiss.com/store/us-los-angeles-tri/basic",
+    "notify_above": 0,
+    "fetch": "flare"
+  },
+  {
+    "name": "VMISS 洛杉矶 TRI Core（$10 CAD/月）",
+    "url": "https://app.vmiss.com/store/us-los-angeles-tri",
+    "stock": "badge",
+    "oos_pattern": "US\\.LA\\.TRI\\.Core[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
+    "buy_url": "https://app.vmiss.com/store/us-los-angeles-tri/core",
+    "notify_above": 0,
+    "fetch": "flare"
+  },
+  {
+    "name": "VMISS 洛杉矶 TRI DC2 Basic（$5 CAD/月）",
+    "url": "https://app.vmiss.com/store/us-los-angeles-bgp",
+    "stock": "badge",
+    "oos_pattern": "US\\.LA\\.TRI\\.DC2\\.Basic[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
+    "buy_url": "https://app.vmiss.com/store/us-los-angeles-bgp/basic",
+    "notify_above": 0,
+    "fetch": "flare"
+  },
+  {
+    "name": "VMISS 洛杉矶 TRI DC2 Core（$10 CAD/月）",
+    "url": "https://app.vmiss.com/store/us-los-angeles-bgp",
+    "stock": "badge",
+    "oos_pattern": "US\\.LA\\.TRI\\.DC2\\.Core[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
+    "buy_url": "https://app.vmiss.com/store/us-los-angeles-bgp/core",
+    "notify_above": 0,
+    "fetch": "flare"
+  },
+  {
+    "name": "VMISS 洛杉矶 9929 Basic（$5 CAD/月）",
+    "url": "https://app.vmiss.com/store/us-los-angeles-9929",
+    "stock": "badge",
+    "oos_pattern": "US\\.LA\\.9929\\.Basic[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
+    "buy_url": "https://app.vmiss.com/store/us-los-angeles-9929/basic",
+    "notify_above": 0,
+    "fetch": "flare"
+  },
+  {
+    "name": "VMISS 洛杉矶 9929 Core（$10 CAD/月）",
+    "url": "https://app.vmiss.com/store/us-los-angeles-9929",
+    "stock": "badge",
+    "oos_pattern": "US\\.LA\\.9929\\.Core[\\s\\S]{0,200}?(?:0\\s*(?:Available|可用)|Out of Stock|缺货|缺貨|售罄)",
+    "buy_url": "https://app.vmiss.com/store/us-los-angeles-9929/core",
+    "notify_above": 0,
+    "fetch": "flare"
   }
 ]
