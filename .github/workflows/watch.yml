@@ -34,5 +34,5 @@ jobs:
           FLARESOLVERR_URL: http://localhost:8191
           ALLOW_STATE_COMMIT: "1"
           MAX_MINUTES: "244"
-          CHECK_INTERVAL: "40"
+          CHECK_INTERVAL: "25"
           HEARTBEAT_HOURS: "2"
