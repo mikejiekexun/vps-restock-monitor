@@ -1,21 +1,5 @@
 [
   {
-    "name": "Lamhost 日本 ChinaRoute JPCR-Zero（￥9.99/月）",
-    "url": "https://lamhosting.com/index.php/store/japan-chinaroute",
-    "pattern": "JPCR-Zero\\s*(\\d+)\\s*可用",
-    "buy_url": "https://lamhosting.com/index.php/store/japan-chinaroute",
-    "notify_above": 0
-  },
-  {
-    "name": "Panstar 台北 TW Lite 最便宜套餐",
-    "stock": "json",
-    "json_url": "https://panstar.ai/api/ecs/catalog/plans?productId=25",
-    "json_decrypt": "panstar",
-    "json_pick": "cheapest",
-    "buy_url": "https://panstar.ai/servers?regionId=12&productId=25&planId=432&cycle=1&aff=DCAD1VCH",
-    "notify_above": 0
-  },
-  {
     "name": "VMISS 洛杉矶 CN2 GIA Basic（$6 CAD/月）",
     "url": "https://app.vmiss.com/store/us-los-angeles-cn2",
     "stock": "badge",
@@ -32,34 +16,6 @@
     "buy_url": "https://app.vmiss.com/store/us-los-angeles-cn2/core",
     "notify_above": 0,
     "fetch": "flare"
-  },
-  {
-    "name": "Akile 日本 JPPro（大陆三网优化）有货监控",
-    "stock": "json",
-    "json_url": "https://api.akile.ai/api/v1/store/GetVpsStoreV3",
-    "json_stock_field": "stock",
-    "json_pick": "count_in_stock",
-    "json_find_plans": {
-      "steps": [
-        {
-          "path": "data.areas",
-          "filter": {
-            "area_name": "日本"
-          }
-        },
-        {
-          "path": "nodes",
-          "filter": {
-            "group_name": "JPPro"
-          }
-        },
-        {
-          "path": "plans"
-        }
-      ]
-    },
-    "buy_url": "https://akile.ai/shop/server?areaId=5",
-    "notify_above": 0
   },
   {
     "name": "VMISS 洛杉矶 TRI Basic（$5 CAD/月）",
